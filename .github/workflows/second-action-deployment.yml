@@ -1,0 +1,41 @@
+name: 2nd Action - Deployment
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code from market
+        # the keyword when want to use an "action"
+        # remember to specify a version via @
+        uses: actions/checkout@v3
+        # some actions require configuration, can use "with" commands
+      # in fact Ubuntu comes with nodejs pre-installed
+      # but for demo purpose we still install it
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        # "npm" is the "Node Package Manager" tool - a tool used for installing dependencies
+        # third-party packages and managing NodeJS project
+        run: npm ci
+      - name: Run tests
+        run: npm test
+
+  # add a second job named Deploy
+  deploy:
+    # every job has its own runner. Different jobs could have differernt runners.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code from market
+        uses: actions/checkout@v3
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build
+      - name: Deploy
+        run: echo "Deploying..."
