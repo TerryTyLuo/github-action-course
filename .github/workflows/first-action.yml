@@ -1,0 +1,22 @@
+# technically, "Actions" are a separate feature (which will be explored later).
+# Here, we are creating a "workflow"
+
+# name of the workflow
+name: First Workflow
+
+# defines which event(s) trigger the workflow
+# workflow_dispatch makes sure we can MANUALLY trigger this workflow
+on: workflow_dispatch
+
+# define jobs
+jobs:
+  # define job names. customizable
+  first-job:
+    # define runner, can search for "GitHub runner" to get a list of available runners
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#viewing-available-runners-for-a-repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print greeting
+        run: echo "Hello world!"
+      - name: Print goodbye
+        run: echo "Done - bye!"
