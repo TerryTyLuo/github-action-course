@@ -20,3 +20,8 @@ jobs:
         run: echo "Hello world!"
       - name: Print goodbye
         run: echo "Done - bye!"
+      - name: Run Multiple shell commands
+        run: |
+          echo "First output"
+          echo "Second output"
+          echo "Third output"
