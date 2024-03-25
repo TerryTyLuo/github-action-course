@@ -24,7 +24,10 @@ jobs:
 
   # add a second job named Deploy
   deploy:
-    # every job has its own runner. Different jobs could have differernt runners.
+    # set up the sequence of job execution
+    # says here the job needs "test" job to be finished first
+    needs: test
+    # every job has its own runner. Different jobs could have different runners.
     runs-on: ubuntu-latest
     steps:
       - name: Get code from market
