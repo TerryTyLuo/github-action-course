@@ -1,4 +1,4 @@
-import HelpBox from './HelpBox.jsx';
+import HelpBox from './HelpBox';
 import './HelpArea.css';
 
 const HELP_ITEMS = [
