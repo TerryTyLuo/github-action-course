@@ -1,5 +1,9 @@
 name: 2nd Action - Deployment
-on: [push, workflow_dispatch]
+on:
+  push:
+    paths-ignore:
+      - ".github/workflows/*"
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
