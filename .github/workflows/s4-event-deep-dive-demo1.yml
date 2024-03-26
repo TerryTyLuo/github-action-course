@@ -17,7 +17,7 @@ on:
     paths-ignore:
       # means the push event will be triggered
       # ONLY if at least one file changed ELSEWHERE other than the folders below.
-      - '.github/workflow/*'
+      - '.github/workflows/*'
 jobs:
   deploy:
     runs-on: ubuntu-latest
