@@ -9,7 +9,22 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      # we want to cache the dependencies to re-use it later
+      # need to create a step in FRONT of the things want to cache
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          # point to the files and folders should be cached
+          # this is the npm-created cache folder.
+          # we need to store it in cloud/Github server where not getting removed across runners
+          path: ~/.npm
+          # key to retrieve the cache
+          # also indicate whether the cache needs to be re-created due to some changes
+          # in this project the package-lock stores all dependencies and versions
+          # whether the file changes, the hash will change as well
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        # with cache before, the npm ci will no longer need to re-download the dependencies
         run: npm ci
       - name: Lint code
         run: npm run lint
@@ -25,6 +40,11 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
         # the build job will produce some assets
