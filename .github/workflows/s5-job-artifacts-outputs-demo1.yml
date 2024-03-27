@@ -42,7 +42,7 @@ jobs:
       # it downloads the artifacts produced by previous actions
       # which necessitates the "needs" as it must run AFTER the build job
       - name: Get build artifacts
-        uses: actions/download-artifacts@v3
+        uses: actions/download-artifact@v3
         # specify the artifacts
         with:
           # same name used in build job
