@@ -39,5 +39,16 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      # it downloads the artifacts produced by previous actions
+      # which necessitates the "needs" as it must run AFTER the build job
+      - name: Get build artifacts
+        uses: actions/download-artifacts@v3
+        # specify the artifacts
+        with:
+          # same name used in build job
+          # it loses the dist-files folder and all the files under the folder are directly accessible
+          name: dist-files
+      - name: Output contents
+        run: ls
       - name: Deploy
         run: echo "Deploying..."
