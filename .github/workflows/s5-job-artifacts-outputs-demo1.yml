@@ -18,6 +18,10 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    # the outputs key allows us to define any outputs
+    # as many outputs as we want
+    outputs:
+      script-file: ${{ steps.publish.outputs.step-output-script-file }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -26,6 +30,20 @@ jobs:
         # the build job will produce some assets
       - name: Build website
         run: npm run build
+        # output the file name
+      - name: Publish js filename
+        # must specify a unique ID for the step so the context value can access
+        id: publish
+        # in step 1, we set up a value name (not necessarily to be the output name set above)
+        # the name here will be the step output name
+        # and then target a special file created by GitHub in the env where your job runs
+        # and where the output key-value pairs will be written into
+        run: find dist/assets/*.js -type f -execdir echo 'step-output-script-file={}' >> $GITHUB_OUTPUT ';'
+
+        # an alternative way which was used IN THE PAST is to set up the echo command
+        # will NOT be supported in the future
+        # run: find dist/assets/*.js -type f -execdir echo '::set-output name=script-file::{}' ';'
+
         # it would be greate if we can store the outputs
         # can use an Action (an official Action)
       - name: Upload artifacts
@@ -34,7 +52,7 @@ jobs:
           name: dist-files
           path: |
             dist
-            package.json
+         #   package.json
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -50,5 +68,9 @@ jobs:
           name: dist-files
       - name: Output contents
         run: ls
+        # use "needs" to access the pre-requisite jobs (in this case is the "build" job)
+        # then outputs, script-file
+      - name: Output filename
+        run: echo "${{ needs.build.outputs.script-file }}"
       - name: Deploy
         run: echo "Deploying..."
