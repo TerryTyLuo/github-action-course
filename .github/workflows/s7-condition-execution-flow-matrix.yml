@@ -5,6 +5,8 @@ on:
       - main
 jobs:
   build:
+    # continue on the jobs related to this matrix, even if some combinations fail
+    continue-on-error: true
     strategy:
       matrix:
         # can be any value that could be changing
