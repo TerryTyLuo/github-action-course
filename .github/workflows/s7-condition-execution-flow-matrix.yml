@@ -11,7 +11,7 @@ jobs:
         # and for which you want to run the job
         # the jobs will run ALL COMBINATIONS of values, so in total 6 jobs run in parallel
         node-version: [12, 14, 16]
-        operation-system: [ubuntu-latest, windows-latest]
+        operating-system: [ubuntu-latest, windows-latest]
     # use context expression here
     # to run each operating system and in parallel
     runs-on: ${{ matrix.operating-system }}
