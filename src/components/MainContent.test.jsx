@@ -21,6 +21,6 @@ describe('MainContent', () => {
     await userEvent.click(button);
     // make an intentional error to fail the test!
     // fixed the intentional error
-    expect(screen.getByTestId('help-area')).toBeInTheDocument();
+    expect(screen.getByTestId('help-are')).toBeInTheDocument();
   });
 });
