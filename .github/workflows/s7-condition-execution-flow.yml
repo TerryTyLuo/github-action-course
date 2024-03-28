@@ -13,9 +13,13 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        # we can skip this step id we successfully used our cache
+        # the cache actions has an output "cache-hit" indicating if an exact match was found for the key
+        # if we were not able to use the cache, we won't skip this step
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Lint code
         run: npm run lint
@@ -28,9 +32,13 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        # we can skip this step id we successfully used our cache
+        # the cache actions has an output "cache-hit" indicating if an exact match was found for the key
+        # if we were not able to use the cache, we won't skip this step
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test code
       # add a id to refer it in the next step
@@ -55,9 +63,15 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          # not cashing the global npm folder
+          # but instead the local node modules folder
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        # we can skip this step id we successfully used our cache
+        # the cache actions has an output "cache-hit" indicating if an exact match was found for the key
+        # if we were not able to use the cache, we won't skip this step
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Build website
         id: build-website
@@ -88,4 +102,4 @@ jobs:
       - name: Output information
         run: |
           echo "Something went wrong"
-          echo "${{ github }}"
+          echo "${{ toJSON(github) }}"
