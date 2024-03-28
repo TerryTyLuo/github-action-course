@@ -40,7 +40,7 @@ jobs:
       # also normally by default, if "Test Code" failed, the next steps (and jobs) wouldn't even run
       - name: Upload test report
       # in "if" clause, as we mostly need to evaluate expressions, we can omit ${{}} syntax
-        if: steps.run-tests.outcome == 'failure'
+        if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
