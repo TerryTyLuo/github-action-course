@@ -14,6 +14,17 @@ jobs:
         # the jobs will run ALL COMBINATIONS of values, so in total 6 jobs run in parallel
         node-version: [12, 14, 16]
         operating-system: [ubuntu-latest, windows-latest]
+        include:
+          # determine some key-value pairs should include without adding a bunch of combinations
+          # not adding 18 above, otherwise it will also introduce 18 & windows-latest pair
+          - node-version: 18
+            operating-system: ubuntu-latest
+          # can also add new keys
+            new_variable : 6
+        exclude:
+          # exclude below combinations from the matrix
+          - node-version: 12
+            operating-system: windows-latest
     # use context expression here
     # to run each operating system and in parallel
     runs-on: ${{ matrix.operating-system }}
