@@ -1,0 +1,9 @@
+name: Conditional Execution - Reusable Deploy
+# to make it reusable, it must be callable by other workflows
+on: workflow_call
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        run: echo "Deploying & uploading..."

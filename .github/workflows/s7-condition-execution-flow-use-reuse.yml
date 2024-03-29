@@ -1,0 +1,97 @@
+name: Conditional Execution - Use Reusable WF
+on:
+  push:
+    branches:
+      - main
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        # we can skip this step id we successfully used our cache
+        # the cache actions has an output "cache-hit" indicating if an exact match was found for the key
+        # if we were not able to use the cache, we won't skip this step
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Lint code
+        run: npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        # we can skip this step id we successfully used our cache
+        # the cache actions has an output "cache-hit" indicating if an exact match was found for the key
+        # if we were not able to use the cache, we won't skip this step
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Test code
+        # set it's to true, the job will continue execution EVEN if the step fails
+        # so the next steps and JOBS will still execute even if the the step fails
+        continue-on-error: true
+        id: run-tests
+        run: npm run test
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: test.json
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          # not cashing the global npm folder
+          # but instead the local node modules folder
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        # we can skip this step id we successfully used our cache
+        # the cache actions has an output "cache-hit" indicating if an exact match was found for the key
+        # if we were not able to use the cache, we won't skip this step
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Build website
+        id: build-website
+        run: npm run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist
+  deploy:
+    needs: build
+    # use the reusable WF
+    # by providing an absolute path from the root folder
+    uses: ./.github/workflows/s7-condition-execution-flow-reusable.yml
+
+  report:
+    # only when any of the previous jobs failed, will this job run
+    if: failure()
+    needs: [lint, test, build, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        run: |
+          echo "Something went wrong"
+          echo "${{ toJSON(github) }}"
