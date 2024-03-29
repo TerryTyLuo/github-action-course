@@ -1,9 +1,25 @@
 name: Conditional Execution - Reusable Deploy
 # to make it reusable, it must be callable by other workflows
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+          description: The name of the deployable artifact files
+          # indicate if the WF will fail without the indicated value
+          required: false
+          default: dist
+          # must specify the data type
+          type: string
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Get Code
+        uses: actions/download-artifact@v3
+        with:
+          # need the artifact name dynamic so it is truly reusable
+          name: ${{ inputs.artifact-name }}
+      - name:  List files
+        run: ls
       - name: Output information
         run: echo "Deploying & uploading..."

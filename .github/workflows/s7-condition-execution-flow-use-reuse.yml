@@ -84,7 +84,8 @@ jobs:
     # use the reusable WF
     # by providing an absolute path from the root folder
     uses: ./.github/workflows/s7-condition-execution-flow-reusable.yml
-
+    with:
+      artifact-name: dist-files
   report:
     # only when any of the previous jobs failed, will this job run
     if: failure()
