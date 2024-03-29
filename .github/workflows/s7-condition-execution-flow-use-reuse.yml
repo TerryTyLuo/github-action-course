@@ -86,6 +86,14 @@ jobs:
     uses: ./.github/workflows/s7-condition-execution-flow-reusable.yml
     with:
       artifact-name: dist-files
+    # secrets:
+    #  some-secret: #{{ secrets.some-secret}}
+  print-deploy-result:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print deploy output
+        run: echo "${{ needs.deploy.outputs.result }}
   report:
     # only when any of the previous jobs failed, will this job run
     if: failure()
