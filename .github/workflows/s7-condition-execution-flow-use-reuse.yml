@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print deploy output
-        run: echo "${{ needs.deploy.outputs.result }}
+        run: echo "${{ needs.deploy.outputs.result }}"
   report:
     # only when any of the previous jobs failed, will this job run
     if: failure()
