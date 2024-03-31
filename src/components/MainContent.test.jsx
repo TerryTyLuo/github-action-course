@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import MainContent from './MainContent';
+import MainContent from './MainContent.jsx';
 
 // My tests!
 // Add yet another comment
@@ -19,8 +19,6 @@ describe('MainContent', () => {
 
     const button = screen.getByRole('button');
     await userEvent.click(button);
-    // make an intentional error to fail the test!
-    // fixed the intentional error
     expect(screen.getByTestId('help-area')).toBeInTheDocument();
   });
 });
