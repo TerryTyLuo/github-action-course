@@ -32,6 +32,6 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
       run: |
         npm ci
-        echo : "cache='${{ steps.cache.outputs.cache-hit || inputs.caching }}'" >> $GITHUB_OUTPUT
+        echo : "cache='${{ inputs.caching }}'" >> $GITHUB_OUTPUT
       # extra setting here in custom actions and use "run" key
       shell: bash
