@@ -11,6 +11,13 @@ jobs:
   test:
     environment: testing
     runs-on: ubuntu-latest
+    # put the job execution into a container
+    # specify an image name here.
+    # could upload custom images to Docker, or use the officials
+    container:
+      image: node:16
+      # could put more container related params
+      # like "env" for variables needed by image, NOT the steps
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb+srv
       MONGODB_CLUSTER_ADDRESS: cluster0.ntrwp.mongodb.net
