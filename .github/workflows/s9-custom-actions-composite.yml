@@ -1,4 +1,4 @@
-name: Custom Actions - Composite
+name: S9 - Custom Actions - Composite
 on:
   push:
     branches:
