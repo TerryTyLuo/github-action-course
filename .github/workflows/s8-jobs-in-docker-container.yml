@@ -19,11 +19,22 @@ jobs:
       # could put more container related params
       # like "env" for variables needed by image, NOT the steps
     env:
-      MONGODB_CONNECTION_PROTOCOL: mongodb+srv
-      MONGODB_CLUSTER_ADDRESS: cluster0.ntrwp.mongodb.net
-      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+      MONGODB_CONNECTION_PROTOCOL: mongodb
+      MONGODB_CLUSTER_ADDRESS: mongodb
+      # will run tests in a service container, need to align with the container setup
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: example
       PORT: 8080
+    # add service containers to a specific job
+    services:
+      # assign a label, customizable
+      mongodb:
+        # must provide an image as services ALWAYS run in an image
+        image: mongo
+        # depends on the image if needed extra variables
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
     steps:
       - name: Get Code
         uses: actions/checkout@v3
