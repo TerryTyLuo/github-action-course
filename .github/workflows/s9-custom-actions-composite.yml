@@ -10,6 +10,7 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Load & Cache dependencies
+        id: cache-deps
         # if created actions in a stand-alone repo, need to add the repo identifier here
         # or put path here
         # no need to pu "action.yml" here as Github will automatically look for it
@@ -19,6 +20,8 @@ jobs:
           caching: 'false'
       - name: Lint code
         run: npm run lint
+      - name: Output information
+        run: echo "Cached used? ${{ steps.cache-deps.outputs.used-cache }}"
   test:
     runs-on: ubuntu-latest
     steps:
