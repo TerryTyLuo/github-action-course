@@ -14,6 +14,9 @@ jobs:
         # or put path here
         # no need to pu "action.yml" here as Github will automatically look for it
         uses: ./.github/actions/cached-deps
+        # our custom action accepts inputs
+        with:
+          caching: 'false'
       - name: Lint code
         run: npm run lint
   test:

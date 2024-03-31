@@ -1,19 +1,31 @@
 name: Get and Cache Dependencies
 # no need to add "on" here as the main WF will trigger this custom action
 description: "Get the dependencies (via npm) and cache them"
+# to allow actions accept inputs
+inputs:
+  caching:
+    # description is a must
+    description: 'whether to cache dependencies or not.'
+    required: false
+    # optional
+    default: 'true'
+
 runs:
   # this must be "composite"
-  # this will tell Github this is a custom composite action
+  # this will tell GitHub this is a custom composite action
   using: 'composite'
   steps:
     - name: Cache dependencies
+      # using inputs here
+      if: inputs.caching == 'true'
       id: cache
       uses: actions/cache@v3
       with:
         path: node_modules
         key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
+      # use inputs here
+      if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
       run: npm ci
       # extra setting here in custom actions and use "run" key
       shell: bash
