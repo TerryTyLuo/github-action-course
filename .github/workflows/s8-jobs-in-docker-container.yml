@@ -14,13 +14,14 @@ jobs:
     # put the job execution into a container
     # specify an image name here.
     # could upload custom images to Docker, or use the officials
-    container:
-      image: node:16
-      # could put more container related params
-      # like "env" for variables needed by image, NOT the steps
+#    container:
+#      image: node:16
+#      # could put more container related params
+#      # like "env" for variables needed by image, NOT the steps
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb
-      MONGODB_CLUSTER_ADDRESS: mongodb
+      # if not running the job in a Job Container, need to use a local host IP and port number if needed
+      MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
       # will run tests in a service container, need to align with the container setup
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
@@ -32,6 +33,11 @@ jobs:
         # must provide an image as services ALWAYS run in an image
         image: mongo
         # depends on the image if needed extra variables
+        # if running the job not inside a Job Container,
+        # need to specify the host IP address and port number
+        # also need to open the port here
+        ports:
+          - 27017:27017
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
