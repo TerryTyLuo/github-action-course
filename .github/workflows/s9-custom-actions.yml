@@ -1,8 +1,10 @@
 name: S9 - Custom Actions - Composite
 on:
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
+  workflow_dispatch:
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -13,7 +15,7 @@ jobs:
         id: cache-deps
         # if created actions in a stand-alone repo, need to add the repo identifier here
         # or put path here
-        # no need to pu "action.yml" here as Github will automatically look for it
+        # no need to pu "action.yml" here as GitHub will automatically look for it
         uses: ./.github/actions/cached-deps
         # our custom action accepts inputs
         with:
@@ -72,5 +74,43 @@ jobs:
           path: ./dist
       - name: Output contents
         run: ls
-      - name: Deploy site
-        run: echo "Deploying..."
+
+        # not actually going to run it as it requires js installed and a S3 bucket
+      - name: Deploy site (JS)
+        id: deploy-site-js
+        uses: ./.github/actions/deploy-s3-js
+        # use env to set up AWS_ACCESS_KEY as only need the Env variable in this step
+        env:
+          # it's a perfect case to use GitHub secrets
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          bucket: gha-custom-action-hosting
+          # no need to provide a bucket-region as it falls to the default value
+          # pointing to the downloaded artifacts
+          dist-folder: ./dist
+      - name: Output information
+        run: |
+          echo "Live url - ${{ steps.deploy-site-js.outputs.website-url }}"
+      - name: Deploy site (Docker)
+        id: deploy-site-docker
+        # only difference is to change the action folder path
+        uses: ./.github/actions/deploy-s3-docker
+        env:
+          # it's a perfect case to use GitHub secrets
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          bucket: gha-custom-action-hosting
+          # no need to provide a bucket-region as it falls to the default value
+          # pointing to the downloaded artifacts
+          dist-folder: ./dist
+
+  information:
+    runs-on: ubuntu-latest
+    steps:
+      # need a step to check out code as the custom action comes from this repository
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Run custom action
+        uses: ./.github/actions/deploy-s3-js
