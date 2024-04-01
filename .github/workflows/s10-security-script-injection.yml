@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # let the command be evaluated separately
-      TITLE = ${{ github.event.issue.title }}
+      TITLE: ${{ github.event.issue.title }}
     steps:
       - name: Assign label
         run: |
